@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+base="/base"
+subs="$base/.subs.archive"
+conf="$base/.subs.conf"
+
+source $conf
+
+if [[ ! -d $base ]]; then
+    echo "$0: $base doesn't exist, bailing."
+    exit -1
+fi
+
+for src in $subs; do
+(
+    youtube-dl -i \
+        --output "$base/%(uploader_id)s/%(title)s-%(id)s.%(ext)s" \
+        --download-archive $subs \
+        --reject-title $reject \
+        --max-downloads $per \
+        --playlist-end $max \
+        --rate-limit $rate \
+        --format $fmt \
+        --all-subs \
+        --write-thumbnail \
+        $* $src
+    print -- '================================================================================'
+    sleep 15
+)
+done
