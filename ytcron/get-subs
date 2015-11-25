@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 base="/base"
-subs="$base/.subs.archive"
+arch="$base/.subs.archive"
 conf="$base/.subs.conf"
 
 source $conf
@@ -21,9 +21,12 @@ touch $LOCK
 
 for src in $subs; do
 (
+    print -- '================================================================================'
+    print -- "===== $src"
+    print -- '================================================================================'
     youtube-dl -i \
         --output "$base/%(uploader_id)s/%(title)s-%(id)s.%(ext)s" \
-        --download-archive $subs \
+        --download-archive $arch \
         --reject-title $reject \
         --max-downloads $per \
         --playlist-end $max \
