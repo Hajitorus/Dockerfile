@@ -7,9 +7,17 @@ conf="$base/.subs.conf"
 source $conf
 
 if [[ ! -d $base ]]; then
-    echo "$0: $base doesn't exist, bailing."
+    echo "$0: base directory $base doesn't exist, bailing."
     exit -1
 fi
+
+LOCK="/var/lock/ytcron.pid"
+
+if [[ -f $LOCK ]]; then
+    echo "$0: lock $LOCK exists, bailing."
+    exit -2
+fi
+touch $LOCK
 
 for src in $subs; do
 (
@@ -28,3 +36,5 @@ for src in $subs; do
     sleep 15
 )
 done >> /var/log/ytcron.log
+
+rm $LOCK
