@@ -9,7 +9,7 @@ Environment for running [youtube-dl](https://github.com/rg3/youtube-dl) in docke
 
 ### Example usage:
 
-Download a video:
+Start the cron daemon:
 
 ```bash
 $ docker run -it --rm -v "$(pwd):/base" hajitorus/youtube-dl

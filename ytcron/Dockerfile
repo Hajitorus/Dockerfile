@@ -11,3 +11,5 @@ RUN apk update \
 
 # Run the command on container startup
 CMD crond && tail -f /var/log/cron.log
+
+# First attempt. Hope it works?
