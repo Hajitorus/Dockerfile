@@ -13,4 +13,4 @@ RUN apk update \
 
 # Run the command on container startup
 # CMD crond && tail -f /var/log/ytcron.log
-CMD crond
+CMD crond -f
