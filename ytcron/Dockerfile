@@ -12,5 +12,4 @@ RUN apk update \
 	&& rm -rf /var/cache/apk/*
 
 # Run the command on container startup
-# CMD crond && tail -f /var/log/ytcron.log
-CMD crond -f
+CMD crond && exec tail -f /var/log/ytcron.log
