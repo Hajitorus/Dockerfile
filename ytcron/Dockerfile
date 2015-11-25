@@ -7,10 +7,9 @@ RUN touch /var/log/ytcron.log
 RUN touch /var/log/cron.log
 
 RUN apk update \
-	&& apk add ca-certificates ffmpeg zsh youtube-dl \
+	&& apk add ca-certificates ffmpeg zsh \
+	&& apk add youtube-dl --update-cache --repository http://dl-4.alpinelinux.org/alpine/edge/community/ \
 	&& rm -rf /var/cache/apk/*
 
 # Run the command on container startup
 CMD crond && tail -f /var/log/ytcron.log
-
-# First attempt. Hope it works?
