@@ -12,6 +12,6 @@ Environment for running [youtube-dl](https://github.com/rg3/youtube-dl) in docke
 Start the cron daemon:
 
 ```bash
-$ docker run -it --rm -v "$(pwd):/base" hajitorus/youtube-dl
+$ docker run -it --rm -v "/NAS/Watch/Stream:/base" hajitorus/ytcron
 ```
 
