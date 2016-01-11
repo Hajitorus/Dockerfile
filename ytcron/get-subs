@@ -3,6 +3,7 @@
 base="/base"
 arch="$base/.subs.archive"
 conf="$base/.subs.conf"
+lock="$base/.ytcron.pid"
 
 source $conf
 
@@ -11,13 +12,32 @@ if [[ ! -d $base ]]; then
     exit -1
 fi
 
-# LOCK="/var/lock/ytcron.pid"
-# 
-# if [[ -f $LOCK ]]; then
-#     echo "$0: lock $LOCK exists, bailing."
-#     exit -2
-# fi
-# touch $LOCK
+if [[ -f $lock ]]; then
+    echo "$0: lock $lock exists, bailing."
+    exit -2
+fi
+print $$ > $lock
+
+for vid in $vids; do
+(
+    print -- '================================================================================'
+    print -- "===== $vid"
+    print -- '================================================================================'
+    youtube-dl -i \
+        --output "$base/[queue]/%(title)s-%(id)s.%(ext)s" \
+        --download-archive $arch \
+        --reject-title $reject \
+        --max-downloads $per \
+        --playlist-end $max \
+        --rate-limit $rate \
+        --format $fmt \
+        --all-subs \
+        --write-thumbnail \
+        $* $vid
+    print -- '================================================================================'
+    sleep 15
+)
+done
 
 for src in $subs; do
 (
@@ -40,4 +60,4 @@ for src in $subs; do
 )
 done >> /var/log/ytcron.log
 
-# rm $LOCK
+rm $lock
