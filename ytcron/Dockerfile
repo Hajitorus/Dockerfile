@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:latest
 MAINTAINER docker.c@nsuckmyballs.com
 
 ADD get-subs /etc/periodic/hourly/get-subs
