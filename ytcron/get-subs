@@ -37,7 +37,7 @@ for vid in $vids; do
     print -- '================================================================================'
     sleep 15
 )
-done
+done >> /var/log/ytcron.log
 
 for src in $subs; do
 (
