@@ -5,6 +5,7 @@ arch="$base/.subs.archive"
 conf="$base/.subs.conf"
 lock="$base/.ytcron.pid"
 logfile="$base/ytcron.log"
+touch $logfile
 
 echo "Sourcing $conf for configuration."
 source $conf
@@ -43,8 +44,7 @@ for vid in $vids; do
     print -- '================================================================================'
     sleep 15
 )
-done
-# >> $logfile
+done >> $logfile
 
 echo "Starting download of subscriptions."
 
@@ -67,7 +67,10 @@ for src in $subs; do
     print -- '================================================================================'
     sleep 15
 )
-done
-# >> $logfile
+done >> $logfile
+
+echo "Done, removing lock."
 
 rm $lock
+
+echo "Bye!"
