@@ -15,7 +15,8 @@ RUN apk update \
 # --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
 
 VOLUME ["/base"]
-ENTRYPOINT ["crond"]
+# ENTRYPOINT ["crond"]
+CMD crond && tail -f /var/log/ytcron.log
 
 # DSM's log viewer is useless; we'll monitor logs some other way.
 # tail -f /var/log/ytcron.log
