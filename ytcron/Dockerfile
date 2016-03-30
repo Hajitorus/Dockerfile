@@ -16,7 +16,7 @@ RUN apk update \
 
 VOLUME ["/base"]
 # ENTRYPOINT ["crond"]
-CMD crond && tail -f /var/log/ytcron.log
+CMD crond | tee /base/ytcron.log
 
 # DSM's log viewer is useless; we'll monitor logs some other way.
 # tail -f /var/log/ytcron.log

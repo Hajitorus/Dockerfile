@@ -1,10 +1,10 @@
 #!/bin/zsh
 
-logfile="/var/log/ytcron.log"
 base="/base"
 arch="$base/.subs.archive"
 conf="$base/.subs.conf"
 lock="$base/.ytcron.pid"
+logfile="$base/ytcron.log"
 
 echo "Sourcing $conf for configuration."
 source $conf
