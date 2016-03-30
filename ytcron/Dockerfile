@@ -14,7 +14,7 @@ RUN apk update \
 # I think Alpine is using community by default now?
 # --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
 
-VOLUME ["/base"]
+# VOLUME ["/base"]
 # ENTRYPOINT ["crond"]
 CMD crond | tee /base/ytcron.log
 
