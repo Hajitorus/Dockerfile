@@ -43,7 +43,8 @@ for vid in $vids; do
     print -- '================================================================================'
     sleep 15
 )
-done >> $logfile
+done
+# >> $logfile
 
 echo "Starting download of subscriptions."
 
@@ -66,6 +67,7 @@ for src in $subs; do
     print -- '================================================================================'
     sleep 15
 )
-done >> $logfile
+done
+# >> $logfile
 
 rm $lock
