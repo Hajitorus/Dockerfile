@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:edge
 MAINTAINER docker.c@nsuckmyballs.com
 
 ADD get-subs /etc/periodic/hourly/get-subs
@@ -8,7 +8,7 @@ RUN touch /var/log/cron.log
 
 RUN apk update \
 	&& apk add ca-certificates zsh \
-	&& apk add youtube-dl --update-cache --repository http://dl-4.alpinelinux.org/alpine/edge/community/x86 \
+	&& apk add youtube-dl --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
 	&& rm -rf /var/cache/apk/*
 
 # Run the command on container startup
