@@ -1,11 +1,14 @@
 #!/bin/zsh
 
+logfile="/var/log/ytcron.log"
 base="/base"
 arch="$base/.subs.archive"
 conf="$base/.subs.conf"
 lock="$base/.ytcron.pid"
 
+echo "Sourcing $conf for configuration."
 source $conf
+echo "Configuration complete."
 
 if [[ ! -d $base ]]; then
     echo "$0: base directory $base doesn't exist, bailing."
@@ -17,6 +20,9 @@ if [[ -f $lock ]]; then
     exit -2
 fi
 print $$ > $lock
+
+echo "Base directory exists; lockfile not present."
+echo "Starting download of one-offs."
 
 for vid in $vids; do
 (
@@ -37,7 +43,9 @@ for vid in $vids; do
     print -- '================================================================================'
     sleep 15
 )
-done >> /var/log/ytcron.log
+done >> $logfile
+
+echo "Starting download of subscriptions."
 
 for src in $subs; do
 (
@@ -58,6 +66,6 @@ for src in $subs; do
     print -- '================================================================================'
     sleep 15
 )
-done >> /var/log/ytcron.log
+done >> $logfile
 
 rm $lock
