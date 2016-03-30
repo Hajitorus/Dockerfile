@@ -8,8 +8,14 @@ RUN touch /var/log/cron.log
 
 RUN apk update \
 	&& apk add ca-certificates zsh \
-	&& apk add youtube-dl --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
+	&& apk add youtube-dl \
 	&& rm -rf /var/cache/apk/*
 
-# Run the command on container startup
-CMD crond && exec tail -f /var/log/ytcron.log
+# I think Alpine is using community by default now?
+# --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
+
+VOLUME ["/base"]
+ENTRYPOINT ["crond"]
+
+# DSM's log viewer is useless; we'll monitor logs some other way.
+# tail -f /var/log/ytcron.log
