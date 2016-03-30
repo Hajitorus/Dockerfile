@@ -7,8 +7,7 @@ RUN touch /var/log/ytcron.log
 RUN touch /var/log/cron.log
 
 RUN apk update \
-	&& apk add ca-certificates zsh \
-	&& apk add youtube-dl \
+	&& apk add ca-certificates coreutils zsh youtube-dl \
 	&& rm -rf /var/cache/apk/*
 
 # I think Alpine is using community by default now?
