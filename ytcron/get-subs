@@ -52,14 +52,14 @@ end
 echo "Base directory exists; lockfile not present."
 echo "Starting download of one-offs."
 
-for vid in (construct_vids)
-    call_with_logging get_single_source '[queue]' $vid
+for el in (construct_vids)
+    call_with_logging get_single_source '[queue]' $el
 end
 
 echo "Starting download of subscriptions."
 
-for src in (construct_subs)
-    call_with_logging get_single_source '%(uploader_id)s' $vid
+for el in (construct_subs)
+    call_with_logging get_single_source '%(uploader_id)s' $el
 end
 
 echo "Done, removing lock."
