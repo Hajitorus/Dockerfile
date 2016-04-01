@@ -1,34 +1,15 @@
 #!/usr/bin/fish
 
-set base "/base"
-set logs "/logs"
-set arch "$base/.subs.archive"
-set conf "$base/.subs.conf"
-set lock "$base/.ytcron.pid"
-set logg "$logs/ytcron.log"
-touch $logg
-
-echo "Sourcing $conf for configuration."
-source $conf
-echo "Configuration complete."
-
-if test ! -d $base
-    echo "$0: base directory $base doesn't exist, bailing."
-    exit -1
+function carp
+    echo $argv | tee -a $logg
 end
-
-if test -f $lock
-    echo "$0: lock $lock exists, bailing."
-    exit -2
-end
-echo %self > $lock
 
 function get_single_source
     set -l dir $argv[1]
     set -l vid $argv[2]
-    echo '================================================================================'
-    echo "===== $vid"
-    echo '================================================================================'
+    carp '================================================================================'
+    carp "===== $vid"
+    carp '================================================================================'
     youtube-dl -i \
         --output "$base/$dir/%(title)s-%(id)s.%(ext)s" \
         --download-archive $arch \
@@ -39,26 +20,49 @@ function get_single_source
         --format $fmt \
         --all-subs \
         --write-thumbnail \
-        $vid
-    echo '================================================================================'
+        $vid | tee -a $logg
+    carp '================================================================================'
     sleep 15
 end
 
-echo "Base directory exists; lockfile not present."
-echo "Starting download of one-offs."
+set base "/base"
+set logs "/logs"
+set arch "$base/.subs.archive"
+set conf "$base/.subs.conf"
+set lock "$base/.ytcron.pid"
+set logg "$logs/ytcron.log"
+touch $logg
+
+carp "Sourcing $conf for configuration."
+source $conf
+carp "Configuration complete."
+
+if test ! -d $base
+    echo "$0: base directory $base doesn't exist, bailing."
+    exit -1
+end
+
+if test -f $lock
+    echo "$0: lock $lock exists, bailing."
+    exit -2
+end
+carp %self > $lock
+
+carp "Base directory exists; lockfile not present."
+carp "Starting download of one-offs."
 
 for el in (construct_vids)
-    get_single_source '[queue]' $el >> $logg
+    get_single_source '[queue]' $el
 end
 
-echo "Starting download of subscriptions."
+carp "Starting download of subscriptions."
 
 for el in (construct_subs)
-    get_single_source '%(uploader_id)s' $el >> $logg
+    get_single_source '%(uploader_id)s' $el
 end
 
-echo "Done, removing lock."
+carp "Done, removing lock."
 
 rm $lock
 
-echo "Bye!"
+carp "Bye!"
