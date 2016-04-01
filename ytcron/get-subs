@@ -44,21 +44,17 @@ function get_single_source
     sleep 15
 end
 
-function call_with_logging
-    eval $argv[1] "$argv[2]" "$argv[3]" >> $logg
-end
-
 echo "Base directory exists; lockfile not present."
 echo "Starting download of one-offs."
 
 for el in (construct_vids)
-    call_with_logging get_single_source '[queue]' $el
+    get_single_source '[queue]' $el >> $logg
 end
 
 echo "Starting download of subscriptions."
 
 for el in (construct_subs)
-    call_with_logging get_single_source '%(uploader_id)s' $el
+    get_single_source '%(uploader_id)s' $el >> $logg
 end
 
 echo "Done, removing lock."
