@@ -1,73 +1,66 @@
-#!/bin/zsh
+#!/usr/bin/fish
 
-base="/base"
-arch="$base/.subs.archive"
-conf="$base/.subs.conf"
-lock="$base/.ytcron.pid"
-logfile="$base/ytcron.log"
-touch $logfile
+set base "/base"
+set logs "/logs"
+set arch "$base/.subs.archive"
+set conf "$base/.subs.conf"
+set lock "$base/.ytcron.pid"
+set logg "$logs/ytcron.log"
+touch $logg
 
 echo "Sourcing $conf for configuration."
 source $conf
 echo "Configuration complete."
 
-if [[ ! -d $base ]]; then
+if test ! -d $base
     echo "$0: base directory $base doesn't exist, bailing."
     exit -1
-fi
+end
 
-if [[ -f $lock ]]; then
+if test -f $lock
     echo "$0: lock $lock exists, bailing."
     exit -2
-fi
-print $$ > $lock
+end
+echo %self > $lock
+
+function get_single_source
+    set -l dir $argv[1]
+    set -l vid $argv[2]
+    set -l argv $argv[3..-1]
+    echo '================================================================================'
+    echo "===== $vid"
+    echo '================================================================================'
+    youtube-dl -i \
+        --output "$base/$dir/%(title)s-%(id)s.%(ext)s" \
+        --download-archive $arch \
+        --reject-title $reject \
+        --max-downloads $per \
+        --playlist-end $max \
+        --rate-limit $rate \
+        --format $fmt \
+        --all-subs \
+        --write-thumbnail \
+        $argv $vid
+    echo '================================================================================'
+    sleep 15
+end
+
+function call_with_logging
+    eval $argv >> $logg
+end
 
 echo "Base directory exists; lockfile not present."
 echo "Starting download of one-offs."
 
-for vid in $vids; do
-(
-    print -- '================================================================================'
-    print -- "===== $vid"
-    print -- '================================================================================'
-    youtube-dl -i \
-        --output "$base/[queue]/%(title)s-%(id)s.%(ext)s" \
-        --download-archive $arch \
-        --reject-title $reject \
-        --max-downloads $per \
-        --playlist-end $max \
-        --rate-limit $rate \
-        --format $fmt \
-        --all-subs \
-        --write-thumbnail \
-        $* $vid
-    print -- '================================================================================'
-    sleep 15
-)
-done >> $logfile
+for vid in (construct_vids)
+    call_with_logging get_single_source '[queue]' $vid
+end
 
 echo "Starting download of subscriptions."
 
-for src in $subs; do
-(
-    print -- '================================================================================'
-    print -- "===== $src"
-    print -- '================================================================================'
-    youtube-dl -i \
-        --output "$base/%(uploader_id)s/%(title)s-%(id)s.%(ext)s" \
-        --download-archive $arch \
-        --reject-title $reject \
-        --max-downloads $per \
-        --playlist-end $max \
-        --rate-limit $rate \
-        --format $fmt \
-        --all-subs \
-        --write-thumbnail \
-        $* $src
-    print -- '================================================================================'
-    sleep 15
-)
-done >> $logfile
+for src in (construct_subs)
+    call_with_logging get_single_source '%(uploader_id)s' $vid
+end
 
 echo "Done, removing lock."
 
