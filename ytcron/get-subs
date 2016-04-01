@@ -26,7 +26,6 @@ echo %self > $lock
 function get_single_source
     set -l dir $argv[1]
     set -l vid $argv[2]
-    set -l argv $argv[3..-1]
     echo '================================================================================'
     echo "===== $vid"
     echo '================================================================================'
@@ -40,13 +39,13 @@ function get_single_source
         --format $fmt \
         --all-subs \
         --write-thumbnail \
-        $argv $vid
+        $vid
     echo '================================================================================'
     sleep 15
 end
 
 function call_with_logging
-    eval $argv >> $logg
+    eval $argv[1] "$argv[2]" "$argv[3]" >> $logg
 end
 
 echo "Base directory exists; lockfile not present."
