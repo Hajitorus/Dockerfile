@@ -7,7 +7,7 @@ end
 function get_single_source
     if -f /base/.ytcron.bail
         carp "Bailing out because we were asked to."
-        exit -
+        exit -3
     end
     set -l dir $argv[1]
     set -l vid $argv[2]
