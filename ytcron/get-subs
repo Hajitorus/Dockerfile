@@ -38,12 +38,12 @@ source $conf
 carp "Configuration complete."
 
 if test ! -d $base
-    carp "$0: base directory $base doesn't exist, bailing."
+    carp "$_: base directory $base doesn't exist, bailing."
     exit -1
 end
 
 if test -f $lock
-    carp "$0: lock $lock exists, bailing."
+    carp "$_: lock $lock exists, bailing."
     exit -2
 end
 echo %self > $lock
