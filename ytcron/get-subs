@@ -20,7 +20,7 @@ function get_single_source
         --format $fmt \
         --all-subs \
         --write-thumbnail \
-        $vid | tee -a $logg
+        -- $vid | tee -a $logg
     carp '================================================================================'
     sleep 15
 end
