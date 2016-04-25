@@ -7,7 +7,7 @@ end
 carp "$_ starting up."
 
 function get_single_source
-    if -f /base/.ytcron.bail
+    if test -f /base/.ytcron.bail
         carp "Bailing out because we were asked to."
         exit -3
     end
