@@ -18,6 +18,7 @@ function get_single_source
     carp '================================================================================'
     youtube-dl -i \
         --output "$base/$dir/%(title)s-%(id)s.%(ext)s" \
+        --merge-output-format $out \
         --download-archive $arch \
         --reject-title $reject \
         --max-downloads $per \
