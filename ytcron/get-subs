@@ -5,6 +5,7 @@ set logs "/logs"
 set arch "$base/.subs.archive"
 set conf "$base/.subs.conf"
 set lock "$base/.ytcron.pid"
+set bail "$base/.ytcron.bail"
 set logg "$logs/ytcron.log"
 touch $logg
 
@@ -27,8 +28,9 @@ carp "Base directory exists; lockfile not present."
 carp "{$_} starting up."
 
 function get_single_source
-    if test -f /base/.ytcron.bail
+    if test -f $bail
         carp "Bailing out because we were asked to."
+        rm $lock
         exit -3
     end
     set -l dir $argv[1]
