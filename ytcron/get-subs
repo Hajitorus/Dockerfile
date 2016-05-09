@@ -1,10 +1,30 @@
 #!/usr/bin/fish
 
+set base "/base"
+set logs "/logs"
+set arch "$base/.subs.archive"
+set conf "$base/.subs.conf"
+set lock "$base/.ytcron.pid"
+set logg "$logs/ytcron.log"
+touch $logg
+
 function carp
     echo $argv | tee -a $logg
 end
 
-carp "$_ starting up."
+if test -f $lock
+    carp "{$_}: lock $lock exists, bailing."
+    exit -2
+end
+echo %self > $lock
+
+if test ! -d $base
+    carp "{$_}: base directory $base doesn't exist, bailing."
+    exit -1
+end
+
+carp "Base directory exists; lockfile not present."
+carp "{$_} starting up."
 
 function get_single_source
     if test -f /base/.ytcron.bail
@@ -32,48 +52,20 @@ function get_single_source
     sleep 15
 end
 
-carp "Functions defined."
-
-set base "/base"
-set logs "/logs"
-set arch "$base/.subs.archive"
-set conf "$base/.subs.conf"
-set lock "$base/.ytcron.pid"
-set logg "$logs/ytcron.log"
-touch $logg
-
-carp "Variables defined."
-
 carp "Sourcing $conf for configuration."
 source $conf
 carp "Configuration complete."
 
-if test ! -d $base
-    carp "$_: base directory $base doesn't exist, bailing."
-    exit -1
-end
-
-if test -f $lock
-    carp "$_: lock $lock exists, bailing."
-    exit -2
-end
-echo %self > $lock
-
-carp "Base directory exists; lockfile not present."
 carp "Starting download of one-offs."
-
 for el in (construct_vids)
     get_single_source '[queue]' $el
 end
 
 carp "Starting download of subscriptions."
-
 for el in (construct_subs)
     get_single_source '%(uploader_id)s' $el
 end
 
 carp "Done, removing lock."
-
 rm $lock
-
 carp "Bye!"
