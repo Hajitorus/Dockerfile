@@ -50,7 +50,7 @@ function get_single_source
         --all-subs \
         --ignore-errors \
         --write-thumbnail \
-        -- "$vid" | tee -a "$logg"
+        -- "$vid" 2>&1 | tee -a "$logg"
     carp '================================================================================'
     sleep 15
 end
