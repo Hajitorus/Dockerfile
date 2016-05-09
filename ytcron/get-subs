@@ -10,16 +10,16 @@ set logg "$logs/ytcron.log"
 touch $logg
 
 function carp
-    echo $argv | tee -a $logg
+    echo $argv | tee -a "$logg"
 end
 
-if test -f $lock
+if test -f "$lock"
     carp "{$_}: lock $lock exists, bailing."
     exit -2
 end
 echo %self > $lock
 
-if test ! -d $base
+if test ! -d "$base"
     carp "{$_}: base directory $base doesn't exist, bailing."
     exit -1
 end
@@ -28,9 +28,9 @@ carp "Base directory exists; lockfile not present."
 carp "{$_} starting up."
 
 function get_single_source
-    if test -f $bail
+    if test -f "$bail"
         carp "Bailing out because we were asked to."
-        rm $lock
+        rm "$lock"
         exit -3
     end
     set -l dir $argv[1]
@@ -38,36 +38,37 @@ function get_single_source
     carp '================================================================================'
     carp "===== $vid"
     carp '================================================================================'
-    youtube-dl -i \
+    #   --merge-output-format $out \
+    youtube-dl \
         --output "$base/$dir/%(title)s-%(id)s.%(ext)s" \
-        --merge-output-format $out \
-        --download-archive $arch \
-        --reject-title $reject \
-        --max-downloads $per \
-        --playlist-end $max \
-        --rate-limit $rate \
-        --format $fmt \
+        --download-archive "$arch" \
+        --reject-title "$reject" \
+        --max-downloads "$per" \
+        --playlist-end "$max" \
+        --rate-limit "$rate" \
+        --format "$fmt" \
         --all-subs \
+        --ignore-errors \
         --write-thumbnail \
-        -- $vid | tee -a $logg
+        -- "$vid" | tee -a "$logg"
     carp '================================================================================'
     sleep 15
 end
 
 carp "Sourcing $conf for configuration."
-source $conf
+source "$conf"
 carp "Configuration complete."
 
 carp "Starting download of one-offs."
 for el in (construct_vids)
-    get_single_source '[queue]' $el
+    get_single_source '[queue]' "$el"
 end
 
 carp "Starting download of subscriptions."
 for el in (construct_subs)
-    get_single_source '%(uploader_id)s' $el
+    get_single_source '%(uploader_id)s' "$el"
 end
 
 carp "Done, removing lock."
-rm $lock
+rm "$lock"
 carp "Bye!"
